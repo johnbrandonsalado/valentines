@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine?</title>
+<style>
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('path_to_bricolage_grotesque.woff2') format('woff2'), /* Assuming you have the font files */
+         url('path_to_bricolage_grotesque.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  body {
+    font-family: 'Bricolage Grotesque', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(120deg, #f6d365, #fda085);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #gifContainer {
+    margin-bottom: 20px;
+  }
+  #buttons {
+    margin-top: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: none;
+    margin: 0 10px;
+  }
+  #yesButton {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
+  #noButton {
+    background-color: #FF6347; /* Reddish */
+    color: white;
+  }
+  @media screen and (max-width: 600px) {
+    body {
+      margin-top: 30px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    button {
+      font-size: 14px;
+    }
+  }
+  #noButton {
+    transition: all 0.3s ease;
+  }
+  .moved {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+</head>
+<body>
+
+<div id="gifContainer">
+  <img src="https://media.giphy.com/media/l2YSgsunrP27ddQje/giphy.gif?cid=790b761129zjxlx649gl0g6jjmfz14if7v12my7m94jczlqg&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Your GIF">
+</div>
+<h1>Will You Be My Valentine? 💖 </h1>
+
+<div id="buttons">
+  <button id="yesButton">Yes</button>
+  <button id="noButton">No</button>
+</div>
+
+<p id="responseText"></p>
+
+<script>
+  const responseText = document.getElementById('responseText');
+  const yesButton = document.getElementById('yesButton');
+  const noButton = document.getElementById('noButton');
+
+  let noButtonClicks = 0;
+
+  function showResponse(text) {
+    responseText.textContent = text;
+  }
+
+  function getRandomPosition() {
+    const maxWidth = window.innerWidth - 100; // Adjust according to the button's width
+    const maxHeight = window.innerHeight - 100; // Adjust according to the button's height
+    const randomX = Math.floor(Math.random() * maxWidth);
+    const randomY = Math.floor(Math.random() * maxHeight);
+    return { x: randomX, y: randomY };
+  }
+
+  function handleYesClick() {
+    showResponse("Yay! I love you! 💘");
+    noButton.textContent = "No";
+    noButtonClicks = 0;
+    noButton.classList.remove('moved');
+  }
+
+  function handleNoClick() {
+    const noButtonTexts = ["Are you sure?", "Please reconsider", "Pretty please", "Sorry but yes is the only answer"];
+    noButtonClicks++;
+    if (responseText.textContent === "Yay! I love you!") {
+      responseText.textContent = "";
+    }
+    if (noButtonClicks === 1) {
+      noButton.style.left = '10%';
+      noButton.style.top = '10%';
+    } else if (noButtonClicks === 2) {
+      noButton.style.left = '90%';
+      noButton.style.top = '10%';
+    } else if (noButtonClicks === 3) {
+      noButton.style.left = '10%';
+      noButton.style.top = '90%';
+    } else if (noButtonClicks === 4) {
+      noButton.style.left = '50%';
+      noButton.style.top = '50%';
+      noButton.classList.remove('moved');
+      noButtonClicks = 0;
+    }
+    if (noButtonClicks === 4) {
+      noButton.classList.remove('moved');
+    } else {
+      noButton.classList.add('moved');
+      const { x, y } = getRandomPosition();
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+    }
+    if (noButton.dataset.index === undefined) {
+      noButton.dataset.index = 0;
+    } else {
+      noButton.dataset.index = (parseInt(noButton.dataset.index) + 1) % noButtonTexts.length;
+    }
+    noButton.textContent = noButtonTexts[noButton.dataset.index];
+    if (noButtonTexts[noButton.dataset.index] === "Sorry but yes is the only answer") {
+      delete noButton.dataset.index;
+    }
+  }
+
+  yesButton.addEventListener('click', handleYesClick);
+  noButton.addEventListener('click', handleNoClick);
+</script>
+
+</body>
+</html>
